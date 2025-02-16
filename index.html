@@ -60,7 +60,7 @@
         }
 
         input[type="number"] {
-            width: 70px;
+            width: 50px;
             padding: 8px;
             text-align: center;
             border: 1px solid #ccc;
@@ -132,17 +132,17 @@
 <div class="container">
     <h1>Football League Table</h1>
 
-    <p>Enter the data for each player. The table will automatically update rankings.</p>
+    <p>Enter the data for each player (W, D, L). The table will automatically update rankings.</p>
 
     <table>
         <thead>
         <tr>
             <th>Rank</th>
             <th>Player</th>
-            <th>Matches Played</th>
-            <th>Goals For</th>
-            <th>Goals Against</th>
-            <th>Goal Difference</th>
+            <th>MP</th> <!-- Matches Played -->
+            <th>W</th>  <!-- Wins -->
+            <th>D</th>  <!-- Draws -->
+            <th>L</th>  <!-- Losses -->
             <th>Points</th>
         </tr>
         </thead>
@@ -179,9 +179,9 @@
                 <td><span class="ranking">${index + 1}</span></td>
                 <td>${player}</td>
                 <td><input type="number" id="${player}_matchesPlayed" value="${data.matchesPlayed}" onchange="updateDataAndSort('${player}')"></td>
-                <td><input type="number" id="${player}_goalsFor" value="${data.goalsFor}" onchange="updateDataAndSort('${player}')"></td>
-                <td><input type="number" id="${player}_goalsAgainst" value="${data.goalsAgainst}" onchange="updateDataAndSort('${player}')"></td>
-                <td id="${player}_goalDifference">${data.goalDifference}</td>
+                <td><input type="number" id="${player}_wins" value="${data.wins}" onchange="updateDataAndSort('${player}')"></td>
+                <td><input type="number" id="${player}_draws" value="${data.draws}" onchange="updateDataAndSort('${player}')"></td>
+                <td><input type="number" id="${player}_losses" value="${data.losses}" onchange="updateDataAndSort('${player}')"></td>
                 <td id="${player}_points">${data.points}</td>
             `;
             tableBody.appendChild(row);
@@ -195,9 +195,9 @@
         } else {
             return {
                 matchesPlayed: 0,
-                goalsFor: 0,
-                goalsAgainst: 0,
-                goalDifference: 0,
+                wins: 0,
+                draws: 0,
+                losses: 0,
                 points: 0
             };
         }
@@ -205,29 +205,26 @@
 
     function updateDataAndSort(player) {
         let matchesPlayed = parseInt(document.getElementById(`${player}_matchesPlayed`).value) || 0;
-        let goalsFor = parseInt(document.getElementById(`${player}_goalsFor`).value) || 0;
-        let goalsAgainst = parseInt(document.getElementById(`${player}_goalsAgainst`).value) || 0;
+        let wins = parseInt(document.getElementById(`${player}_wins`).value) || 0;
+        let draws = parseInt(document.getElementById(`${player}_draws`).value) || 0;
+        let losses = parseInt(document.getElementById(`${player}_losses`).value) || 0;
 
-        let goalDifference = goalsFor - goalsAgainst;
-        let points = calculatePoints(matchesPlayed, goalsFor, goalsAgainst); // Call the new function
+        let points = calculatePoints(wins, draws); // Calculate points based on wins and draws
 
         // Update localStorage
         updateLocalStorage(player, "matchesPlayed", matchesPlayed);
-        updateLocalStorage(player, "goalsFor", goalsFor);
-        updateLocalStorage(player, "goalsAgainst", goalsAgainst);
-        updateLocalStorage(player, "goalDifference", goalDifference);
+        updateLocalStorage(player, "wins", wins);
+        updateLocalStorage(player, "draws", draws);
+        updateLocalStorage(player, "losses", losses);
         updateLocalStorage(player, "points", points);
 
         createTableRows(); // Re-render the table to update rankings
     }
 
-
-    function calculatePoints(matchesPlayed, goalsFor, goalsAgainst) {
-        // Simplistic way to calculate points based on goal difference in absence of win/loss/draw data
-        //Could do this via the number of goals scored (the more goals = more points)
-      return goalsFor * 3;
+    function calculatePoints(wins, draws) {
+        // Calculate points: 3 for a win, 1 for a draw, 0 for a loss
+        return (wins * 3) + (draws * 1);
     }
-
 
     function updateLocalStorage(player, key, value) {
         let playerData = getPlayerData(player);
