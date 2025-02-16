@@ -5,60 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Football League Table</title>
     <style>
-        /* Combined CSS */
+        /* Combined CSS - Enhanced Styling */
         body {
-            font-family: sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
             margin: 0;
             padding: 0;
+            color: #333;
+            background-image: url('football-field.jpg'); /*  Replace with your football field image */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Keeps the background fixed while scrolling */
         }
 
         .container {
-            width: 80%;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 85%;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #225470;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden; /* Ensures rounded corners are visible */
         }
 
         th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Light background for cells */
         }
 
         th {
-            background-color: #eee;
+            background-color: #3498db; /* Blue header */
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         input[type="number"] {
-            width: 60px;
-            padding: 5px;
+            width: 70px;
+            padding: 8px;
             text-align: center;
-            border: 1px solid #bbb;
-            border-radius: 3px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
 
         button {
-            background-color: #4CAF50;
+            background-color: #2ecc71; /* Green button */
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60; /* Darker green on hover */
         }
 
         /* Style to show ranking */
         .ranking {
             font-weight: bold;
-            color: #007bff; /* Blue color for ranking */
+            color: #e74c3c; /* Red color for ranking */
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Interactive Hover Effect on Table Rows */
+        tbody tr:hover {
+            background-color: rgba(240, 240, 240, 0.7); /* Light gray on hover */
+            transition: background-color 0.3s ease;
+        }
+
+        /* Responsive Design Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+
+            input[type="number"] {
+                width: 50px;
+                padding: 6px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -67,15 +132,14 @@
 <div class="container">
     <h1>Football League Table</h1>
 
+    <p>Enter the data for each player. The table will automatically update rankings.</p>
+
     <table>
         <thead>
         <tr>
             <th>Rank</th>
             <th>Player</th>
             <th>Matches Played</th>
-            <th>Wins</th>
-            <th>Draws</th>
-            <th>Losses</th>
             <th>Goals For</th>
             <th>Goals Against</th>
             <th>Goal Difference</th>
@@ -115,9 +179,6 @@
                 <td><span class="ranking">${index + 1}</span></td>
                 <td>${player}</td>
                 <td><input type="number" id="${player}_matchesPlayed" value="${data.matchesPlayed}" onchange="updateDataAndSort('${player}')"></td>
-                <td><input type="number" id="${player}_wins" value="${data.wins}" onchange="updateDataAndSort('${player}')"></td>
-                <td><input type="number" id="${player}_draws" value="${data.draws}" onchange="updateDataAndSort('${player}')"></td>
-                <td><input type="number" id="${player}_losses" value="${data.losses}" onchange="updateDataAndSort('${player}')"></td>
                 <td><input type="number" id="${player}_goalsFor" value="${data.goalsFor}" onchange="updateDataAndSort('${player}')"></td>
                 <td><input type="number" id="${player}_goalsAgainst" value="${data.goalsAgainst}" onchange="updateDataAndSort('${player}')"></td>
                 <td id="${player}_goalDifference">${data.goalDifference}</td>
@@ -134,9 +195,6 @@
         } else {
             return {
                 matchesPlayed: 0,
-                wins: 0,
-                draws: 0,
-                losses: 0,
                 goalsFor: 0,
                 goalsAgainst: 0,
                 goalDifference: 0,
@@ -147,20 +205,14 @@
 
     function updateDataAndSort(player) {
         let matchesPlayed = parseInt(document.getElementById(`${player}_matchesPlayed`).value) || 0;
-        let wins = parseInt(document.getElementById(`${player}_wins`).value) || 0;
-        let draws = parseInt(document.getElementById(`${player}_draws`).value) || 0;
-        let losses = parseInt(document.getElementById(`${player}_losses`).value) || 0;
         let goalsFor = parseInt(document.getElementById(`${player}_goalsFor`).value) || 0;
         let goalsAgainst = parseInt(document.getElementById(`${player}_goalsAgainst`).value) || 0;
 
         let goalDifference = goalsFor - goalsAgainst;
-        let points = (wins * 3) + draws;
+        let points = calculatePoints(matchesPlayed, goalsFor, goalsAgainst); // Call the new function
 
         // Update localStorage
         updateLocalStorage(player, "matchesPlayed", matchesPlayed);
-        updateLocalStorage(player, "wins", wins);
-        updateLocalStorage(player, "draws", draws);
-        updateLocalStorage(player, "losses", losses);
         updateLocalStorage(player, "goalsFor", goalsFor);
         updateLocalStorage(player, "goalsAgainst", goalsAgainst);
         updateLocalStorage(player, "goalDifference", goalDifference);
@@ -168,6 +220,14 @@
 
         createTableRows(); // Re-render the table to update rankings
     }
+
+
+    function calculatePoints(matchesPlayed, goalsFor, goalsAgainst) {
+        // Simplistic way to calculate points based on goal difference in absence of win/loss/draw data
+        //Could do this via the number of goals scored (the more goals = more points)
+      return goalsFor * 3;
+    }
+
 
     function updateLocalStorage(player, key, value) {
         let playerData = getPlayerData(player);
